@@ -1,0 +1,33 @@
+hr {
+  border-color: #f672a1;
+}
+
+.optionTitle {
+  color: #fff;
+  font-size: 2.9em;
+  font-weight: 800;
+  padding: 30px;
+  padding-right: 100px;
+  text-align: left;
+  min-height: 120px;
+  cursor: default;
+  width: 100%;
+}
+
+.grid {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  height: 100%;
+}
+
+// button {
+//   width: 100%;
+//   color: #fff;
+//   font-size: 1.2em;
+//   font-weight: 800;
+//   border: none;
+//   background-color: inherit;
+//   cursor: pointer;
+//   display: inline-block;
+// }
