@@ -5,10 +5,17 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 
 const Header = (props) => {
+  const changeIcon = () => {
+    window.open(props.playlistURL);
+    props.setPlaylistURL("default");
+  };
+
   if (props.isLoaded && props.playlistURL === "default") {
     return (
       <div className="header">
-        <div className="brandLogo">{props.playlistType}</div>
+        <div className="brandLogo" onClick={() => props.setPlaylist()}>
+          {props.playlistType}
+        </div>
         <div className="plusIconContainer">
           <FontAwesomeIcon
             icon={faPlus}
@@ -22,7 +29,9 @@ const Header = (props) => {
   } else if (props.isLoaded && props.playlistURL !== "") {
     return (
       <div className="header">
-        <div className="brandLogo">{props.playlistType}</div>
+        <div className="brandLogo" onClick={() => props.setPlaylist()}>
+          {props.playlistType}
+        </div>
         <div
           className="plusIconContainer"
           href={props.playlistURL}
@@ -32,7 +41,7 @@ const Header = (props) => {
             icon={faSpotify}
             size="2x"
             className="checkIcon"
-            onClick={() => window.open(props.playlistURL)}
+            onClick={() => changeIcon()}
           />
         </div>
       </div>
@@ -40,7 +49,9 @@ const Header = (props) => {
   } else {
     return (
       <div className="header">
-        <div className="brandLogo">{props.playlistType}</div>
+        <div className="brandLogo" onClick={() => props.setPlaylist()}>
+          {/* {props.playlistType[playlist]} */}
+        </div>
       </div>
     );
   }

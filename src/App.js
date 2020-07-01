@@ -18,14 +18,16 @@ window.location.hash = "";
 
 function App() {
   const [data, setState] = useState([]);
-  const [userID, setID] = useState("");
   const [userTracks, setTracks] = useState("");
+  const [recentTracks, setRecentTracks] = useState("");
   const [isLoaded, changeIsLoaded] = useState(false);
   const [userToken, setTokenState] = useState("");
   const [playlistURL, setPlaylistURL] = useState("default");
-  const [playlistType, setPlaylistType] = useState("FEMTI");
+  const [playlistType, setPlaylistType] = useState("Top Tracks");
   const [recentData, setRecentData] = useState([]);
   const [topArtists, setTopArtists] = useState([]);
+  const [topArtistIDs, setTopArtistIDs] = useState([]);
+  const [topArtistTopTracks, setTopArtistTopTracks] = useState([]);
 
   const setToken = () => {
     let _token = hash.access_token;
@@ -69,44 +71,125 @@ function App() {
 
     axios.all([getUser, getSongs, getTopArtists, getRecentSongs]).then(
       axios.spread((...allData) => {
-        const userData = allData[0];
         const songData = allData[1].data.items;
         const topAristData = allData[2].data.items;
         const recentSongData = allData[3].data.items;
 
-        setID(userData.data.id);
         setTopArtists(topAristData);
         setState(songData);
         setTracks(songData.map((song) => song.uri));
         setRecentData(recentSongData);
+        setRecentTracks(recentSongData.map((song) => song.track.uri));
+        setTopArtistIDs(topAristData.map((song) => song.id));
         changeIsLoaded(true);
       })
     );
   };
 
+  const getTopArtistTopSongs = () => {
+    let topTen = [];
+    topArtistIDs.map((id) =>
+      axios
+        .get(`https://api.spotify.com/v1/artists/${id}/top-tracks?country=GB`, {
+          headers: { Authorization: "Bearer " + userToken },
+        })
+        .then((response) => {
+          let songURI = response.data.tracks[0].uri;
+          topTen.push(songURI);
+        })
+    );
+
+    setTopArtistTopTracks(topTen);
+  };
+
+  const setPlaylist = () => {
+    getTopArtistTopSongs();
+    if (playlistType === "Top Tracks") {
+      setPlaylistType("Top Artists");
+      setPlaylistURL("default");
+    } else if (playlistType === "Top Artists") {
+      setPlaylistType("Most Recent");
+      setPlaylistURL("default");
+    } else if (playlistType === "Most Recent") {
+      setPlaylistType("Top Tracks");
+      setPlaylistURL("default");
+    }
+  };
+
   const createPlaylist = () => {
-    return axios({
-      method: "POST",
-      url: `https://api.spotify.com/v1/me/playlists`,
-      data: {
-        name: playlistName,
-        description: "My top 50 playlist made by femti.app",
-        public: true,
-      },
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${userToken}`,
-      },
-    }).then((res) => {
-      console.log(res.data.external_urls.spotify);
-      populatePlaylist(
-        res.data.id,
-        userTracks,
-        userToken,
-        res.data.external_urls.spotify
-      );
-    });
+    if (playlistType === "Top Tracks") {
+      playlistName = "My 50 Top Tracks";
+      return axios({
+        method: "POST",
+        url: `https://api.spotify.com/v1/me/playlists`,
+        data: {
+          name: playlistName,
+          description: "My 50 Top Tracks made by femti.app",
+          public: true,
+        },
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+      }).then((res) => {
+        console.log(res.data.external_urls.spotify);
+        populatePlaylist(
+          res.data.id,
+          userTracks,
+          userToken,
+          res.data.external_urls.spotify
+        );
+      });
+    } else if (playlistType === "Top Artists") {
+      playlistName = "My 50 Top Artists";
+      return axios({
+        method: "POST",
+        url: `https://api.spotify.com/v1/me/playlists`,
+        data: {
+          name: playlistName,
+          description: "My 50 Top Artists made by femti.app",
+          public: true,
+        },
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+      }).then((res) => {
+        console.log(res.data.external_urls.spotify);
+        populatePlaylist(
+          res.data.id,
+          topArtistTopTracks,
+          userToken,
+          res.data.external_urls.spotify
+        );
+      });
+    } else if (playlistType === "Most Recent") {
+      playlistName = "My 50 Most Recent Tracks";
+      return axios({
+        method: "POST",
+        url: `https://api.spotify.com/v1/me/playlists`,
+        data: {
+          name: playlistName,
+          description: "My 50 Most Recent made by femti.app",
+          public: true,
+        },
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+      }).then((res) => {
+        console.log(res.data.external_urls.spotify);
+        populatePlaylist(
+          res.data.id,
+          recentTracks,
+          userToken,
+          res.data.external_urls.spotify
+        );
+      });
+    }
   };
 
   const populatePlaylist = (id, tracks, token, URL) => {
@@ -121,10 +204,7 @@ function App() {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-    }).then(
-      // (res) => res.data);
-      () => setPlaylistURL(URL)
-    );
+    }).then(() => setPlaylistURL(URL));
   };
 
   useEffect(setToken, []);
@@ -134,10 +214,14 @@ function App() {
       <Container
         isLoaded={isLoaded}
         data={data}
+        recentData={recentData}
         userToken={userToken}
         playlistURL={playlistURL}
         createPlaylist={createPlaylist}
         playlistType={playlistType}
+        topArtists={topArtists}
+        setPlaylist={setPlaylist}
+        setPlaylistURL={setPlaylistURL}
       />
       <Footer />
     </div>
