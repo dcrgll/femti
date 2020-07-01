@@ -16,7 +16,7 @@ $lightGray: #424242;
 }
 
 body {
-  background: $secondary;
+  background: #16db65;
   font-size: 15px;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
@@ -28,6 +28,7 @@ svg {
 }
 
 .spotify-widget {
+  box-shadow: 0px 15px 35px -5px rgba(50, 88, 130, 0.52);
   position: absolute;
   width: 350px;
   height: 510px;
@@ -54,6 +55,10 @@ svg {
     opacity: 0.1;
     transform: scale(0.5);
   }
+}
+
+.spotify-cover-wrapper::-webkit-scrollbar {
+  display: none;
 }
 .spotify-header {
   background: $primary;
@@ -82,7 +87,8 @@ svg {
   height: 88%;
   width: 100%;
   overflow: scroll;
-  scrollbar-color: red yellow;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .spotify-cover {
@@ -360,7 +366,7 @@ svg {
   display: inline-flex;
   text-align: center;
   align-items: center;
-  background-color: #1db954;
+  background-color: #16db65;
   color: #fff;
   border-color: transparent !important;
   border-radius: 999px;
@@ -374,6 +380,8 @@ svg {
   letter-spacing: 3px;
   transition: background-color 200ms ease-in-out;
   vertical-align: middle;
+  font-weight: 700;
+  text-decoration: none;
 
   &:hover {
     background-color: #1ed760;

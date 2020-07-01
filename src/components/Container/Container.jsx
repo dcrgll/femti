@@ -8,7 +8,7 @@ const Container = (props) => {
   if (props.isLoaded === false) {
     return (
       <div className="spotify-widget">
-        <Header />
+        <Header playlistType={props.playlistType} />
         <div className="spotify-cover-wrapper">
           <LoginButton />
         </div>
@@ -21,6 +21,7 @@ const Container = (props) => {
           isLoaded={props.isLoaded}
           createPlaylist={props.createPlaylist}
           playlistURL={props.playlistURL}
+          playlistType={props.playlistType}
         />
 
         <div className="spotify-cover-wrapper">

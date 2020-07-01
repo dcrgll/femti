@@ -15,7 +15,7 @@ const LoginButton = () => {
           "%20"
         )}&response_type=token&show_dialog=true`}
       >
-        SPOTIFY
+        login
       </a>
     </div>
   );

@@ -6,10 +6,9 @@ import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 
 const Header = (props) => {
   if (props.isLoaded && props.playlistURL === "default") {
-    console.log("default");
-    console.log(props.playlistURL);
     return (
       <div className="header">
+        <div className="brandLogo">{props.playlistType}</div>
         <div className="plusIconContainer">
           <FontAwesomeIcon
             icon={faPlus}
@@ -21,10 +20,9 @@ const Header = (props) => {
       </div>
     );
   } else if (props.isLoaded && props.playlistURL !== "") {
-    console.log("not default");
-    console.log(props.playlistURL);
     return (
       <div className="header">
+        <div className="brandLogo">{props.playlistType}</div>
         <div
           className="plusIconContainer"
           href={props.playlistURL}
@@ -40,7 +38,11 @@ const Header = (props) => {
       </div>
     );
   } else {
-    return <div className="header" />;
+    return (
+      <div className="header">
+        <div className="brandLogo">{props.playlistType}</div>
+      </div>
+    );
   }
 };
 
